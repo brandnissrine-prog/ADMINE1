@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>الطلبات</title>
+
+<style>
+body{
+font-family:Arial;
+background:#f6f6f6;
+padding:20px;
+}
+
+.order{
+background:white;
+padding:15px;
+margin-bottom:15px;
+border-radius:12px;
+box-shadow:0 4px 12px rgba(0,0,0,.1);
+}
+</style>
+
+</head>
+<body>
+
+<h2>📦 الطلبات</h2>
+
+<div id="ordersBox"></div>
+
+<script>
+
+let orders = JSON.parse(localStorage.getItem("orders")) || [];
+
+renderOrders();
+
+function renderOrders(){
+
+let html = "";
+
+orders.forEach((order,index)=>{
+
+html += `
+<div class="order">
+
+<h3>🧑 ${order.name}</h3>
+
+<p>📞 ${order.phone}</p>
+<p>🏙 ${order.city}</p>
+<p>🏠 ${order.address}</p>
+<p>💰 ${order.total} درهم</p>
+
+<button onclick="completeOrder(${index})"
+style="
+padding:10px 15px;
+background:#25D366;
+color:white;
+border:none;
+border-radius:20px;
+cursor:pointer;
+margin-top:10px;
+">
+✅ إتمام الطلب
+</button>
+<button onclick="deleteOrder(${index})"
+style="
+padding:10px 15px;
+background:red;
+color:white;
+border:none;
+border-radius:20px;
+cursor:pointer;
+margin-top:10px;
+margin-right:5px;
+">
+🗑 حذف
+</button>
+</div>
+`;
+});
+
+document.getElementById("ordersBox").innerHTML = html;
+
+}
+
+/* إتمام الطلب */
+function deleteOrder(index){
+
+if(confirm("حذف هذا الطلب؟")){
+
+orders.splice(index,1);
+
+localStorage.setItem(
+"orders",
+JSON.stringify(orders)
+);
+
+renderOrders();
+
+}
+
+}
+function completeOrder(index){
+
+let order = orders[index];
+
+/* نحيد 0 الأولى ونزيد 212 */
+let phone = order.phone.replace(/^0/,"212");
+
+let msg = encodeURIComponent(
+"السلام عليكم 🌹\nتم تأكيد طلبك وسيتم التواصل معك قريباً ✅"
+);
+
+/* فتح واتساب */
+window.open(
+"https://wa.me/" + phone + "?text=" + msg,
+"_blank"
+);
+
+}
+</script>
+</body>
+</html>
